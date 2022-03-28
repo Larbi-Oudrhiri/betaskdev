@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Betask{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    table, th, td {
+        border:1px solid black;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ app.user.firstname }}! ✅</h1>
+
+    {% if verificationRequests %}
+        <div class="col-md-12">
+            <table style="width:100%">
+                <tr>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Date created</th>
+                    <th>Message</th>
+                    <th>Rejection Reason</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+                {% for vr in verificationRequests %}
+                    <tr>
+                        <td>{{ vr.user.firstname }} {{ vr.user.lastname }}</td>
+                        <td>{{ vr.status }}</td>
+                        <td>{{ vr.createdAt|date("m/d/Y") }}</td>
+                        <td>
+                            {% if vr.message %}
+                                {{ vr.message }}
+                            {% else %}
+                                No message
+                            {% endif %}
+                        </td>
+                        {% if vr.status == 'Verification requested' %}
+                            <form action="{{ path('app_verification_reject', {'id': vr.id}) }}" method="post">
+                                <td>
+                                    <input type="text" name="reason">
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_verification_reject', {'id': vr.id}) }}"><button type="submit" style="color: red">Reject</button></a>
+                                </td>
+                            </form>
+                            <td>
+                                <a href="{{ path('app_verification_approve', {'id':vr.id}) }}"><button style="color: green">Approve</button></a>
+                            </td>
+                        {% else %}
+                            <td>
+                                {% if vr.reasonIfRejected %}
+                                    {{ vr.reasonIfRejected }}
+                                {% else %}
+                                    No reason
+                                {% endif %}
+                            </td>
+                            <td>
+                                No action
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        No verification requests for now
+    {% endif %}
+</div>
+{% endblock %}

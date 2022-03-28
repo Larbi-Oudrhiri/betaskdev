@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        <link rel="stylesheet" href=
+        "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src=
+                "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+        </script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src=
+                "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js">
+        </script>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body style="height:100vh; margin:0;display:flex;flex-direction:column; ">
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="topnav">
+                <a class="" href="{{ path('app_blog_post') }}">Blog posts</a>
+                <a href="{{ path('app_verification_requests') }}">Verification requests</a>
+                <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% elseif is_granted('ROLE_BLOGGER') %}
+            <div class="topnav">
+                <a class="" href="{{ path('app_home') }}">Blog posts</a>
+                <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% elseif is_granted('ROLE_USER') %}
+            <div class="topnav">
+                <a class="" href="{{ path('app_home') }}">Blog posts</a>
+                <a href="{{ path('app_verification_request') }}">My verification request</a>
+                <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% endif %}
+        {% block body %}{% endblock %}
+        <div class="footer" style="margin-top: auto; min-height:50px; background:PapayaWhip;">
+            Created by Larbi Oudrhiri 03/2022
+        </div>
+    </body>
+</html>

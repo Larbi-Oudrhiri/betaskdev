@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Betask{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Hello {{ app.user.firstname }} ! ✅</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+
+        <div class="col-md-4">
+            <h1>Edit a blog post</h1>
+
+            {{ form_start(blogpostForm) }}
+            {{ form_row(blogpostForm.title) }}
+            {{ form_row(blogpostForm.content) }}
+
+            <button type="submit" class="btn">Edit</button>
+            {{ form_end(blogpostForm) }}
+        </div>
+    </div>
+{% endblock %}

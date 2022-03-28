@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Betask{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        .blogpost { border: 1px solid blue }
+        .datecreation { font-size: 10px}
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Hello {{ app.user.firstname }} ! ✅</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-6">
+            {% if blogPosts %}
+                {% for blogpost in blogPosts %}
+                    <div class="blogpost">
+                        <h2><b>{{ blogpost.title }}</b><p class="datecreation">published on {{ blogpost.createdAt|date("m/d/Y") }}</p></h2>
+                        <p>{{ blogpost.content }}</p>
+                        {% if blogpost.user is same as app.user and is_granted('ROLE_BLOGGER') %}
+                            <a href="{{ path('app_blog_post_edit', {'id': blogpost.id}) }}"><button>Edit</button></a>
+                        {% endif %}
+                    </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                <b>
+                    No blog post for now
+                </b>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            {% if not is_granted('ROLE_ADMIN') %}
+                {% if is_granted('ROLE_BLOGGER') %}
+                    <div class="col-md-6">
+                        <h1>Create a new post</h1>
+
+                        {{ form_start(blogpostForm) }}
+                        {{ form_row(blogpostForm.title) }}
+                        {{ form_row(blogpostForm.content) }}
+
+                        <button type="submit" class="btn">Publish</button>
+                        {{ form_end(blogpostForm) }}
+                    </div>
+                {% elseif app.user.verificationRequest %}
+                    {% if app.user.verificationRequest.status == 'Declined' %}
+                        Your verification request was declined {% if app.user.verificationRequest.reasonIfRejected %}, and here is the reason of the rejection : {{  app.user.verificationRequest.reasonIfRejected }}{% else %}without a reason.{% endif %}
+                    {% else %}
+                        Please wait for the approval of your verification request to be able to publish new blog posts
+                    {% endif %}
+                {% else %}
+                    if you want to be able to publish new posts, please send a verification request from <a href="{{ path('app_verification_request') }}">here</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

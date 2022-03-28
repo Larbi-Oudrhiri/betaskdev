@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Betask{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    table, th, td {
+        border:1px solid black;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ app.user.firstname }}! ✅</h1>
+
+    {% if app.user.verificationRequest %}
+        <div class="col-md-12">
+            <table style="width:60%">
+                <tr>
+                    <th>Status</th>
+                    <th>Date created</th>
+                    <th>Message</th>
+                    {% if app.user.verificationRequest.reasonIfRejected %}
+                        <th>Reason</th>
+                    {% endif %}
+                    {% if app.user.verificationRequest.status == 'Verification requested' %}
+                        <th>Actions</th>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>{{ app.user.verificationRequest.status }}</td>
+                    <td>{{ app.user.verificationRequest.createdAt|date("m/d/Y") }}</td>
+                    <td>
+                        {% if app.user.verificationRequest.message %}
+                            {{ app.user.verificationRequest.message }}
+                        {% else %}
+                            No message
+                        {% endif %}
+                    </td>
+                    {% if app.user.verificationRequest.reasonIfRejected %}
+                        <td>{{ app.user.verificationRequest.reasonIfRejected }}</td>
+                    {% endif %}
+                    {% if app.user.verificationRequest.status == 'Verification requested' %}
+                        <td><a href="{{ path('app_verification_request_edit', {'id': app.user.verificationRequest.id}) }}"><button>Edit</button></a></td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+        <br>
+        <br>
+        <a href="{{ path('app_home') }}">
+            <button type="button" class="execute-button">Go back Home</button>
+        </a>
+    {% else %}
+        Please send a verification request by filling out this form
+        {{ form_start(verificationForm) }}
+            {{ form_row(verificationForm.image) }}
+            {{ form_row(verificationForm.message) }}
+
+            <button type="submit" class="btn">Send</button>
+        {{ form_end(verificationForm) }}
+    {% endif %}
+</div>
+{% endblock %}
